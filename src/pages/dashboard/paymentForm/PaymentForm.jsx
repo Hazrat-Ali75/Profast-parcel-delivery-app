@@ -1,22 +1,26 @@
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js'
-import React, { useState } from 'react'
-import { useParams } from 'react-router'
+import React, { useContext, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
 import useAxiosSecure from '../../../hooks/useAxiosSecure'
 import { useQuery } from '@tanstack/react-query'
 import LoadingSpinner from '../../../loadingSpinner/LoadingSpinner'
+import {AuthContext} from '../../../context/AuthContext'
+import Swal from 'sweetalert2'
 
 const PaymentForm = () => {
 
   const stripe = useStripe()
   const elements = useElements()
-  const {id} = useParams();
+  const {parcelId} = useParams();
+  const {user} = useContext(AuthContext)
   const axiosSecure = useAxiosSecure()
+  const navigate = useNavigate()
   const [problem, setProblem] = useState('')
 
   const {isPending, data : parcelInfo = {}} = useQuery({
-    queryKey : ['parcels', id],
+    queryKey : ['parcels', parcelId],
     queryFn : async ()=>{
-      const res = await axiosSecure.get(`/parcels/${id}`)
+      const res = await axiosSecure.get(`/parcels/${parcelId}`)
       return res.data
     }
   })
@@ -28,7 +32,7 @@ const PaymentForm = () => {
      return <LoadingSpinner></LoadingSpinner>
   }
  
-  console.log(parcelInfo)
+  // console.log(parcelInfo)
  
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,7 +59,7 @@ const PaymentForm = () => {
 
     const res = await axiosSecure.post('/create-payment-intent',{
       amount : amountInCent,
-      id
+      parcelId
     })
 
     const clientSecret = res.data.clientSecret;
@@ -64,7 +68,8 @@ const PaymentForm = () => {
       payment_method: {
         card : elements.getElement(CardElement),
         billing_details : {
-          name : 'Hazrat Ali'
+          name : user.displayName,
+          email : user.email
         }
       }
     });
@@ -73,8 +78,31 @@ const PaymentForm = () => {
       setProblem(result.error.message);
     } else {
       // Payment succeeded
+      setProblem('')
       if(result.paymentIntent.status === 'succeeded'){
+        console.log(result)
         console.log('payment is successfull')
+        const transactionId = result.paymentIntent.id;
+        const paymentData = {
+          parcelId,
+          email : user.email,
+          amount,
+          transactionId : transactionId,
+          paymentMethod : result.paymentIntent.payment_method_types
+        }
+        const paymentRes = await axiosSecure.post('/payments',paymentData)
+        if(paymentRes.data.insertedId){
+          console.log('payment successfull')
+          Swal.fire({
+            position: "top-center",
+            icon: "success",
+            title: `payment successfull `,
+            html : `<strong>Transaction ID:</strong> <code>${transactionId}</code>`,
+            showConfirmButton: false,
+            timer: 1500
+          });
+          navigate('/dashboard/myParcels')
+        }
       }
     }
 

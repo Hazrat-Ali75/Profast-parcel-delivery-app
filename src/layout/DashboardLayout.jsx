@@ -49,7 +49,7 @@ const DashboardLayout = () => {
               <Link to='/dashboard/myParcels'>My Parcels</Link>
             </li>
             <li>
-              <Link to='/dashboard/settings'>Settings</Link>
+              <Link to='/dashboard/paymentHistory'>Payment History</Link>
             </li>
             <li>
               <Link to='/'>Back to Home</Link>

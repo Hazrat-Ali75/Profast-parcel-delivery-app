@@ -77,7 +77,7 @@ const MyParcel = () => {
                   <td className='capitalize'>{parcel.parcelType}</td>
                   <td className='capitalize'>{parcel.delivery_status}</td>
                   <td className='capitalize'>৳{parcel.cost}</td>
-                  <td className='capitalize'>{parcel.payment_status}</td>
+                  <td className={parcel.payment_status === 'paid' ? 'capitalize btn bg-green-500  rounded-lg w-[75px] text-black': 'capitalize btn bg-yellow-300 w-[75px] text-black rounded-lg'}>{parcel.payment_status}</td>
                   <td>{new Date(parcel.creation_date).toLocaleDateString()}</td>
                   <td className='flex gap-2 justify-center'>
                     <button
@@ -88,7 +88,8 @@ const MyParcel = () => {
                     </button>
                     <button
                       onClick={() => handlePayment(parcel._id)}
-                      className='btn btn-sm btn-warning text-white'
+                      disabled = {parcel.payment_status === 'paid' }
+                      className={parcel.payment_status === 'paid' ? 'disabled:cursor-not-allowed btn btn-sm bg-gray-300 text-black' : 'btn btn-sm btn-warning text-white'}
                     >
                       Pay
                     </button>

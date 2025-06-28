@@ -33,7 +33,7 @@ const AuthProvider = ({ children }) => {
   const handleLogOut = () => {
     return signOut(auth)
   }
-  const handleUpdate = updateData => {
+  const handleUpdateUser = updateData => {
     setLoading(true)
     return updateProfile(auth.currentUser, updateData)
   }
@@ -56,7 +56,7 @@ const AuthProvider = ({ children }) => {
     handleRegisterGoogle,
     handleLogin,
     handleLogOut,
-    handleUpdate
+    handleUpdateUser
   }
   return <AuthContext value={authInfo}>{children}</AuthContext>
 }

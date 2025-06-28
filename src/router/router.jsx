@@ -12,6 +12,7 @@ import DashboardHome from '../pages/dashboard/DashboardHome'
 import MyParcel from '../pages/dashboard/MyParcel'
 import Payment from '../pages/dashboard/Payment'
 import PaymentHistory from '../pages/dashboard/paymentHistory/PaymentHistory'
+import TrackPackage from '../pages/dashboard/trackPackage/TrackPackage'
 
 
 export const router = createBrowserRouter([
@@ -65,6 +66,12 @@ export const router = createBrowserRouter([
                 path : '/dashboard/paymentHistory',
                 element : <PrivateProvider>
                     <PaymentHistory></PaymentHistory>
+                </PrivateProvider>
+            },
+            {
+                path : '/dashboard/trackingPackage',
+                element : <PrivateProvider>
+                    <TrackPackage></TrackPackage>
                 </PrivateProvider>
             }
         ]

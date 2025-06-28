@@ -3,31 +3,42 @@ import { useForm } from 'react-hook-form'
 import { FcGoogle } from 'react-icons/fc'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { AuthContext } from '../../../context/AuthContext'
+import axios from 'axios'
+import { useState } from 'react'
 
 const Register = () => {
-  const { setUser, handleRegister, handleRegisterGoogle } =
+  const { setUser, handleRegister, handleRegisterGoogle, handleUpdateUser } =
     useContext(AuthContext)
   const {
     register,
     handleSubmit,
     formState: { errors }
   } = useForm()
+  const [imageUrl, setImageUrl] = useState('')
 
   const navigate = useNavigate()
   const location = useLocation()
 
   const onSubmit = data => {
-
     handleRegister(data.email, data.password)
-    .then(useCredentials=>{
-      const user = useCredentials.user;
-      setUser(user);
-      navigate(`${location.state ? location.state : '/'}`)
-      console.log(user)
-    })
-    .catch(err=>{
-      console.log(err.code)
-    })
+    .then(useCredentials => {
+        const user = useCredentials.user
+        // setUser(user)
+        // console.log(user)
+
+        handleUpdateUser({ displayName: data.name, photoURL: imageUrl })
+          .then(() => {
+            setUser({ ...user, displayName: data.name, photoURL: imageUrl })
+            navigate(`${location.state ? location.state : '/'}`)
+            console.log(user)
+          })
+          .catch(err => {
+            console.log(err.code)
+          })
+      })
+      .catch(err => {
+        console.log(err.code)
+      })
   }
 
   const handleGoogleLogin = () => {
@@ -40,6 +51,20 @@ const Register = () => {
       .catch(err => {
         console.log(err.code)
       })
+  }
+
+  const handleImageUpload = async e => {
+    e.preventDefault()
+    const image = e.target.files[0]
+    const formData = new FormData()
+    formData.append('image', image)
+    const imageUrl = `https://api.imgbb.com/1/upload?key=${
+      import.meta.env.VITE_IMAGE_UPLOAD_KEY
+    }`
+    const res = await axios.post(imageUrl, formData)
+    setImageUrl(res.data.data.url)
+    console.log(res.data.data.url)
+    // console.log(file)
   }
 
   return (
@@ -63,6 +88,17 @@ const Register = () => {
                 {...register('name')}
                 className='input input-bordered w-full'
                 placeholder='Enter your name'
+              />
+            </div>
+            <div>
+              <label className='label text-color-darkgreen'>
+                Upload your photo
+              </label>
+              <input
+                type='file'
+                onChange={handleImageUpload}
+                className='input input-bordered w-full'
+                placeholder='Enter your photo'
               />
             </div>
             <div>

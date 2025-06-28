@@ -1,6 +1,14 @@
 import React from 'react'
 import { Link, Outlet } from 'react-router'
-import { IoClose } from "react-icons/io5";
+import {
+  FaTachometerAlt,
+  FaBox,
+  FaMoneyBillAlt,
+  FaMapMarkedAlt,
+  FaHome
+} from 'react-icons/fa'
+
+import { IoClose } from 'react-icons/io5'
 import Logo from '../pages/shared/Logo/Logo'
 
 const DashboardLayout = () => {
@@ -16,7 +24,9 @@ const DashboardLayout = () => {
           <label htmlFor='dashboard-drawer' className='btn btn-ghost text-xl'>
             ☰
           </label>
-          <span className='ml-2 font-bold text-xl'><Logo></Logo></span>
+          <span className='ml-2 font-bold text-xl'>
+            <Logo></Logo>
+          </span>
         </div>
 
         <div className='p-4'>
@@ -40,19 +50,43 @@ const DashboardLayout = () => {
             </label>
           </div>
 
-          <div className='p-4 font-bold text-2xl border-b'><Logo></Logo></div>
+          <div className='p-4 font-bold text-2xl border-b'>
+            <Logo></Logo>
+          </div>
           <ul className='menu p-4 text-base-content'>
             <li>
-              <Link to='/dashboard'>Dashboard Home</Link>
+              <Link to='/dashboard' className='flex items-center gap-2'>
+                <FaTachometerAlt /> Dashboard Home
+              </Link>
             </li>
             <li>
-              <Link to='/dashboard/myParcels'>My Parcels</Link>
+              <Link
+                to='/dashboard/myParcels'
+                className='flex items-center gap-2'
+              >
+                <FaBox /> My Parcels
+              </Link>
             </li>
             <li>
-              <Link to='/dashboard/paymentHistory'>Payment History</Link>
+              <Link
+                to='/dashboard/paymentHistory'
+                className='flex items-center gap-2'
+              >
+                <FaMoneyBillAlt /> Payment History
+              </Link>
             </li>
             <li>
-              <Link to='/'>Back to Home</Link>
+              <Link
+                to='/dashboard/trackingPackage'
+                className='flex items-center gap-2'
+              >
+                <FaMapMarkedAlt /> Tracking Package
+              </Link>
+            </li>
+            <li>
+              <Link to='/' className='flex items-center gap-2'>
+                <FaHome /> Back to Home
+              </Link>
             </li>
           </ul>
         </aside>
@@ -62,4 +96,3 @@ const DashboardLayout = () => {
 }
 
 export default DashboardLayout
-
